@@ -12,7 +12,7 @@ describe('ShedulingController', () => {
     controller = module.get<ShedulingController>(ShedulingController);
   });
 
-  it('should be defined', () => {
+  it('should be defined', () => { 
     expect(controller).toBeDefined();
   });
 });

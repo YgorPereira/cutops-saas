@@ -1,0 +1,17 @@
+name: continuous_integration
+on: [push]
+jobs:
+  continuous_integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Using Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22.x'
+      - name: Run installation
+        run: npm install
+      - name: Run tests
+        run: npm run test
+      - name: Run build
+        run: npm run build
