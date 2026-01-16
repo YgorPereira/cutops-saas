@@ -1,4 +1,4 @@
 import { Controller } from '@nestjs/common';
 
-@Controller('sheduling')
-export class ShedulingController {}
+@Controller('schedules')
+export class ScheduleController {}
