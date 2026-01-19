@@ -46,6 +46,7 @@ export type ScheduleMinAggregateOutputType = {
   client_id: number | null;
   barber_id: number | null;
   status: $Enums.ScheduleStatus | null;
+  datetime: Date | null;
 };
 
 export type ScheduleMaxAggregateOutputType = {
@@ -56,6 +57,7 @@ export type ScheduleMaxAggregateOutputType = {
   client_id: number | null;
   barber_id: number | null;
   status: $Enums.ScheduleStatus | null;
+  datetime: Date | null;
 };
 
 export type ScheduleCountAggregateOutputType = {
@@ -66,6 +68,7 @@ export type ScheduleCountAggregateOutputType = {
   client_id: number;
   barber_id: number;
   status: number;
+  datetime: number;
   _all: number;
 };
 
@@ -89,6 +92,7 @@ export type ScheduleMinAggregateInputType = {
   client_id?: true;
   barber_id?: true;
   status?: true;
+  datetime?: true;
 };
 
 export type ScheduleMaxAggregateInputType = {
@@ -99,6 +103,7 @@ export type ScheduleMaxAggregateInputType = {
   client_id?: true;
   barber_id?: true;
   status?: true;
+  datetime?: true;
 };
 
 export type ScheduleCountAggregateInputType = {
@@ -109,6 +114,7 @@ export type ScheduleCountAggregateInputType = {
   client_id?: true;
   barber_id?: true;
   status?: true;
+  datetime?: true;
   _all?: true;
 };
 
@@ -213,6 +219,7 @@ export type ScheduleGroupByOutputType = {
   client_id: number;
   barber_id: number;
   status: $Enums.ScheduleStatus;
+  datetime: Date;
   _count: ScheduleCountAggregateOutputType | null;
   _avg: ScheduleAvgAggregateOutputType | null;
   _sum: ScheduleSumAggregateOutputType | null;
@@ -244,6 +251,7 @@ export type ScheduleWhereInput = {
   client_id?: Prisma.IntFilter<'Schedule'> | number;
   barber_id?: Prisma.IntFilter<'Schedule'> | number;
   status?: Prisma.EnumScheduleStatusFilter<'Schedule'> | $Enums.ScheduleStatus;
+  datetime?: Prisma.DateTimeFilter<'Schedule'> | Date | string;
 };
 
 export type ScheduleOrderByWithRelationInput = {
@@ -254,6 +262,7 @@ export type ScheduleOrderByWithRelationInput = {
   client_id?: Prisma.SortOrder;
   barber_id?: Prisma.SortOrder;
   status?: Prisma.SortOrder;
+  datetime?: Prisma.SortOrder;
 };
 
 export type ScheduleWhereUniqueInput = Prisma.AtLeast<
@@ -270,6 +279,7 @@ export type ScheduleWhereUniqueInput = Prisma.AtLeast<
     status?:
       | Prisma.EnumScheduleStatusFilter<'Schedule'>
       | $Enums.ScheduleStatus;
+    datetime?: Prisma.DateTimeFilter<'Schedule'> | Date | string;
   },
   'id'
 >;
@@ -282,6 +292,7 @@ export type ScheduleOrderByWithAggregationInput = {
   client_id?: Prisma.SortOrder;
   barber_id?: Prisma.SortOrder;
   status?: Prisma.SortOrder;
+  datetime?: Prisma.SortOrder;
   _count?: Prisma.ScheduleCountOrderByAggregateInput;
   _avg?: Prisma.ScheduleAvgOrderByAggregateInput;
   _max?: Prisma.ScheduleMaxOrderByAggregateInput;
@@ -306,6 +317,7 @@ export type ScheduleScalarWhereWithAggregatesInput = {
   status?:
     | Prisma.EnumScheduleStatusWithAggregatesFilter<'Schedule'>
     | $Enums.ScheduleStatus;
+  datetime?: Prisma.DateTimeWithAggregatesFilter<'Schedule'> | Date | string;
 };
 
 export type ScheduleCreateInput = {
@@ -316,6 +328,7 @@ export type ScheduleCreateInput = {
   client_id: number;
   barber_id: number;
   status?: $Enums.ScheduleStatus;
+  datetime: Date | string;
 };
 
 export type ScheduleUncheckedCreateInput = {
@@ -326,6 +339,7 @@ export type ScheduleUncheckedCreateInput = {
   client_id: number;
   barber_id: number;
   status?: $Enums.ScheduleStatus;
+  datetime: Date | string;
 };
 
 export type ScheduleUpdateInput = {
@@ -338,6 +352,7 @@ export type ScheduleUpdateInput = {
   status?:
     | Prisma.EnumScheduleStatusFieldUpdateOperationsInput
     | $Enums.ScheduleStatus;
+  datetime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
 export type ScheduleUncheckedUpdateInput = {
@@ -350,6 +365,7 @@ export type ScheduleUncheckedUpdateInput = {
   status?:
     | Prisma.EnumScheduleStatusFieldUpdateOperationsInput
     | $Enums.ScheduleStatus;
+  datetime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
 export type ScheduleCreateManyInput = {
@@ -360,6 +376,7 @@ export type ScheduleCreateManyInput = {
   client_id: number;
   barber_id: number;
   status?: $Enums.ScheduleStatus;
+  datetime: Date | string;
 };
 
 export type ScheduleUpdateManyMutationInput = {
@@ -372,6 +389,7 @@ export type ScheduleUpdateManyMutationInput = {
   status?:
     | Prisma.EnumScheduleStatusFieldUpdateOperationsInput
     | $Enums.ScheduleStatus;
+  datetime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
 export type ScheduleUncheckedUpdateManyInput = {
@@ -384,6 +402,7 @@ export type ScheduleUncheckedUpdateManyInput = {
   status?:
     | Prisma.EnumScheduleStatusFieldUpdateOperationsInput
     | $Enums.ScheduleStatus;
+  datetime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
 export type ScheduleCountOrderByAggregateInput = {
@@ -394,6 +413,7 @@ export type ScheduleCountOrderByAggregateInput = {
   client_id?: Prisma.SortOrder;
   barber_id?: Prisma.SortOrder;
   status?: Prisma.SortOrder;
+  datetime?: Prisma.SortOrder;
 };
 
 export type ScheduleAvgOrderByAggregateInput = {
@@ -410,6 +430,7 @@ export type ScheduleMaxOrderByAggregateInput = {
   client_id?: Prisma.SortOrder;
   barber_id?: Prisma.SortOrder;
   status?: Prisma.SortOrder;
+  datetime?: Prisma.SortOrder;
 };
 
 export type ScheduleMinOrderByAggregateInput = {
@@ -420,6 +441,7 @@ export type ScheduleMinOrderByAggregateInput = {
   client_id?: Prisma.SortOrder;
   barber_id?: Prisma.SortOrder;
   status?: Prisma.SortOrder;
+  datetime?: Prisma.SortOrder;
 };
 
 export type ScheduleSumOrderByAggregateInput = {
@@ -460,6 +482,7 @@ export type ScheduleSelect<
     client_id?: boolean;
     barber_id?: boolean;
     status?: boolean;
+    datetime?: boolean;
   },
   ExtArgs['result']['schedule']
 >;
@@ -476,6 +499,7 @@ export type ScheduleSelectCreateManyAndReturn<
     client_id?: boolean;
     barber_id?: boolean;
     status?: boolean;
+    datetime?: boolean;
   },
   ExtArgs['result']['schedule']
 >;
@@ -492,6 +516,7 @@ export type ScheduleSelectUpdateManyAndReturn<
     client_id?: boolean;
     barber_id?: boolean;
     status?: boolean;
+    datetime?: boolean;
   },
   ExtArgs['result']['schedule']
 >;
@@ -504,6 +529,7 @@ export type ScheduleSelectScalar = {
   client_id?: boolean;
   barber_id?: boolean;
   status?: boolean;
+  datetime?: boolean;
 };
 
 export type ScheduleOmit<
@@ -516,7 +542,8 @@ export type ScheduleOmit<
   | 'service_id'
   | 'client_id'
   | 'barber_id'
-  | 'status',
+  | 'status'
+  | 'datetime',
   ExtArgs['result']['schedule']
 >;
 
@@ -535,6 +562,7 @@ export type $SchedulePayload<
       client_id: number;
       barber_id: number;
       status: $Enums.ScheduleStatus;
+      datetime: Date;
     },
     ExtArgs['result']['schedule']
   >;
@@ -1134,6 +1162,7 @@ export interface ScheduleFieldRefs {
   readonly client_id: Prisma.FieldRef<'Schedule', 'Int'>;
   readonly barber_id: Prisma.FieldRef<'Schedule', 'Int'>;
   readonly status: Prisma.FieldRef<'Schedule', 'ScheduleStatus'>;
+  readonly datetime: Prisma.FieldRef<'Schedule', 'DateTime'>;
 }
 
 // Custom InputTypes

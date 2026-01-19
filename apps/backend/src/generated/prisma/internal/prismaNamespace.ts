@@ -558,6 +558,7 @@ export const ScheduleScalarFieldEnum = {
   client_id: 'client_id',
   barber_id: 'barber_id',
   status: 'status',
+  datetime: 'datetime',
 } as const;
 
 export type ScheduleScalarFieldEnum =

@@ -1,9 +1,11 @@
+import { Schedule } from './schedule.entity';
+
 abstract class ScheduleRepository {
-  abstract createSchedule(scheduleData: any): Promise<any>;
-  abstract listSchedules(filter?: any): Promise<any[]>;
-  abstract getScheduleById(scheduleId: string): Promise<any>;
-  abstract updateSchedule(scheduleId: string, updateData: any): Promise<any>;
-  abstract deleteSchedule(scheduleId: string): Promise<void>;
+  abstract create(scheduleData: Schedule): Promise<string>;
+  abstract readAll(filter?: any): Promise<Schedule[]>;
+  abstract readById(scheduleId: string): Promise<Schedule | null>;
+  abstract update(scheduleId: string, updateData: any): Promise<void>;
+  abstract delete(scheduleId: string): Promise<void>;
 }
 
 export { ScheduleRepository };

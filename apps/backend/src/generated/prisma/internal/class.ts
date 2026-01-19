@@ -19,7 +19,7 @@ const config: runtime.GetPrismaClientConfig = {
   engineVersion: '0c8ef2ce45c83248ab3df073180d5eda9e8be7a3',
   activeProvider: 'sqlite',
   inlineSchema:
-    '// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = "prisma-client"\n  output   = "../src/generated/prisma"\n}\n\ndatasource db {\n  provider = "sqlite"\n}\n\nenum ScheduleStatus {\n  PENDING\n  CANCELLED\n  COMPLETED\n}\n\nmodel Schedule {\n  id         String         @id @default(uuid())\n  createdAt  DateTime       @default(now())\n  updatedAt  DateTime       @updatedAt\n  service_id Int\n  client_id  Int\n  barber_id  Int\n  status     ScheduleStatus @default(PENDING)\n}\n',
+    '// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = "prisma-client"\n  output   = "../src/generated/prisma"\n}\n\ndatasource db {\n  provider = "sqlite"\n}\n\nenum ScheduleStatus {\n  PENDING\n  CANCELLED\n  COMPLETED\n}\n\nmodel Schedule {\n  id         String         @id @default(uuid())\n  createdAt  DateTime       @default(now())\n  updatedAt  DateTime       @updatedAt\n  service_id Int\n  client_id  Int\n  barber_id  Int\n  status     ScheduleStatus @default(PENDING)\n  datetime   DateTime\n}\n',
   runtimeDataModel: {
     models: {},
     enums: {},
@@ -28,7 +28,7 @@ const config: runtime.GetPrismaClientConfig = {
 };
 
 config.runtimeDataModel = JSON.parse(
-  '{"models":{"Schedule":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"service_id","kind":"scalar","type":"Int"},{"name":"client_id","kind":"scalar","type":"Int"},{"name":"barber_id","kind":"scalar","type":"Int"},{"name":"status","kind":"enum","type":"ScheduleStatus"}],"dbName":null}},"enums":{},"types":{}}',
+  '{"models":{"Schedule":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"service_id","kind":"scalar","type":"Int"},{"name":"client_id","kind":"scalar","type":"Int"},{"name":"barber_id","kind":"scalar","type":"Int"},{"name":"status","kind":"enum","type":"ScheduleStatus"},{"name":"datetime","kind":"scalar","type":"DateTime"}],"dbName":null}},"enums":{},"types":{}}',
 );
 
 async function decodeBase64AsWasm(
