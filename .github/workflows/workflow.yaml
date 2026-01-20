@@ -15,6 +15,10 @@ jobs:
         working-directory: apps/backend
         run: npm install
 
+      - name: Prisma Generate
+        working-directory: apps/backend
+        run: npx prisma generate
+
       - name: Run tests
         working-directory: apps/backend
         run: npm run test

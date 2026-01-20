@@ -9,7 +9,7 @@ export class Schedule {
     public readonly updatedAt?: Date,
   ) {}
 
-  static create(props: {
+  static createSchedule(props: {
     serviceId: string;
     barberId: string;
     clientId: string;
@@ -21,6 +21,22 @@ export class Schedule {
       props.barberId,
       props.clientId,
       props.datetime,
+    );
+  }
+
+  updateSchedule(props: {
+    serviceId?: string;
+    barberId?: string;
+    clientId?: string;
+    datetime?: Date;
+  }): Schedule {
+    return new Schedule(
+      this.id,
+      props.serviceId ?? this.serviceId,
+      props.barberId ?? this.barberId,
+      props.clientId ?? this.clientId,
+      props.datetime ?? this.datetime,
+      this.createdAt,
     );
   }
 

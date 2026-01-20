@@ -7,34 +7,52 @@ class PrismaScheduleRepository extends ScheduleRepository {
     super();
   }
 
-  async create(data: Schedule): Promise<string> {
-    // eslint-disable-next-line no-useless-catch
-    try {
-      const created = await this.prisma.schedule.create({
-        data: {
-          clientId: data.clientId,
-          barberId: data.barberId,
-          serviceId: data.serviceId,
-          datetime: data.datetime,
-        },
-      });
+  async create(data: Schedule): Promise<Schedule> {
+    const created = await this.prisma.schedule.create({
+      data: {
+        clientId: data.clientId,
+        barberId: data.barberId,
+        serviceId: data.serviceId,
+        datetime: data.datetime,
+      },
+    });
 
-      return created.id;
-    } catch (error) {
-      throw error;
-    }
+    return Schedule.restore(created);
   }
-  readAll(): Promise<Schedule[]> {
-    throw new Error('Method not implemented.');
+
+  async readAll(): Promise<Schedule[]> {
+    const schedules = await this.prisma.schedule.findMany();
+
+    const mappedSchedules = schedules.map((s) => Schedule.restore(s));
+
+    return mappedSchedules;
   }
-  readById(scheduleId: string): Promise<Schedule | null> {
-    throw new Error('Method not implemented.');
+
+  async readById(id: string): Promise<Schedule | null> {
+    const schedule = await this.prisma.schedule.findUnique({
+      where: { id },
+    });
+
+    return schedule ? Schedule.restore(schedule) : null;
   }
-  update(data: any): Promise<void> {
-    throw new Error('Method not implemented.');
+
+  async update(data: Schedule): Promise<Schedule> {
+    const updated = await this.prisma.schedule.update({
+      where: { id: data.id },
+      data: {
+        clientId: data.clientId,
+        barberId: data.barberId,
+        serviceId: data.serviceId,
+        datetime: data.datetime,
+      },
+    });
+
+    return Schedule.restore(updated);
   }
-  delete(scheduleId: string): Promise<void> {
-    throw new Error('Method not implemented.');
+
+  async delete(id: string): Promise<void> {
+    await this.prisma.schedule.delete({ where: { id } });
+    return;
   }
 }
 
