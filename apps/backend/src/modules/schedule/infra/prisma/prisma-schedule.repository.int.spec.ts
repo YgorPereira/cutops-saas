@@ -8,28 +8,34 @@ describe('PrismaScheduleRepository', () => {
   let repository: PrismaScheduleRepository;
   let created: Schedule;
 
-  const scheduleDefault: Schedule = Schedule.createSchedule({
+  const scheduleDefaultData: Schedule = Schedule.createSchedule({
     serviceId: 'service-123',
     barberId: 'barber-456',
     clientId: 'client-789',
     datetime: new Date('2026-01-01T10:00:00Z'),
   });
 
-  beforeEach(async () => {
+  beforeAll(async () => {
+    // Create the prisma client
     prisma = createPrismaClient();
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    // Open a connection with database by prisma client
     await prisma.$connect();
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    // Instance a concrete repository implemehantion
     repository = new PrismaScheduleRepository(prisma as any);
+  });
 
-    // Seed data for testing
-    created = await repository.create(scheduleDefault);
+  beforeEach(async () => {
+    // Delete all schedules before each test
+    await prisma.schedule.deleteMany();
+
+    // Seed data for tests
+    created = await repository.create(scheduleDefaultData);
   });
 
   afterAll(async () => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    // Close the connection after run all tests
     await prisma.$disconnect();
   });
 
@@ -37,7 +43,7 @@ describe('PrismaScheduleRepository', () => {
     expect(repository).toBeDefined();
   });
 
-  it('should create a schedule', async () => {
+  it('should create a schedule', () => {
     expect(created).toBeDefined();
     expect(created).toBeInstanceOf(Schedule);
   });
@@ -59,12 +65,18 @@ describe('PrismaScheduleRepository', () => {
     expect(schedule).toBeInstanceOf(Schedule);
   });
 
+  it('should read a schedule by non-existent id and return null', async () => {
+    const nonExistentSchedule = await repository.readById('fakeId');
+
+    expect(nonExistentSchedule).toBe(null);
+  });
+
   it('should update a schedule', async () => {
     const scheduleToUpdate = await repository.readById(created.id);
 
     const newDatetime = new Date('2026-01-02T11:00:00Z');
 
-    const newScheduleData = scheduleToUpdate?.updateSchedule({
+    const newScheduleData = scheduleToUpdate.updateSchedule({
       datetime: newDatetime,
     });
 
@@ -75,6 +87,19 @@ describe('PrismaScheduleRepository', () => {
     expect(updatedSchedule.id).toBe(created.id);
     expect(updatedSchedule.updatedAt).toBeDefined();
     expect(updatedSchedule.updatedAt).toBeInstanceOf(Date);
+  });
+
+  it('should throw when updating non-existent schedule', () => {
+    const newDatetime = new Date('2026-01-02T11:00:00Z');
+
+    const scheduleToUpdate = scheduleDefaultData.updateSchedule({
+      id: 'fake_id',
+      datetime: newDatetime,
+    });
+
+    void expect(repository.update(scheduleToUpdate)).rejects.toMatchObject({
+      code: 'P2025',
+    });
   });
 
   it('should delete a schedule', async () => {

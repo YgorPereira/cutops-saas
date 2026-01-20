@@ -25,13 +25,14 @@ export class Schedule {
   }
 
   updateSchedule(props: {
+    id?: string;
     serviceId?: string;
     barberId?: string;
     clientId?: string;
     datetime?: Date;
   }): Schedule {
     return new Schedule(
-      this.id,
+      props.id ?? this.id,
       props.serviceId ?? this.serviceId,
       props.barberId ?? this.barberId,
       props.clientId ?? this.clientId,
