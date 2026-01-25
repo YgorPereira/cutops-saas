@@ -49,7 +49,7 @@ describe('PrismaScheduleRepository', () => {
   });
 
   it('should read all schedules', async () => {
-    const schedules = await repository.readAll();
+    const schedules = await repository.listAll();
 
     expect(schedules).toBeDefined();
     expect(Array.isArray(schedules)).toBe(true);
@@ -58,7 +58,7 @@ describe('PrismaScheduleRepository', () => {
   });
 
   it('should read a schedule by id', async () => {
-    const schedule = await repository.readById(created.id);
+    const schedule = await repository.getById(created.id);
 
     expect(schedule).toBeDefined();
     expect(schedule?.id).toBe(created.id);
@@ -66,13 +66,13 @@ describe('PrismaScheduleRepository', () => {
   });
 
   it('should read a schedule by non-existent id and return null', async () => {
-    const nonExistentSchedule = await repository.readById('fakeId');
+    const nonExistentSchedule = await repository.getById('fakeId');
 
     expect(nonExistentSchedule).toBe(null);
   });
 
   it('should update a schedule', async () => {
-    const scheduleToUpdate = await repository.readById(created.id);
+    const scheduleToUpdate = await repository.getById(created.id);
 
     const newDatetime = new Date('2026-01-02T11:00:00Z');
 
@@ -105,7 +105,7 @@ describe('PrismaScheduleRepository', () => {
   it('should delete a schedule', async () => {
     await repository.delete(created.id);
 
-    const deleteSchedule = await repository.readById(created.id);
+    const deleteSchedule = await repository.getById(created.id);
 
     expect(deleteSchedule).toBeNull();
   });

@@ -1,7 +1,9 @@
 import { PrismaService } from 'src/modules/database/prisma.service';
 import { Schedule } from '../../domain/schedule.entity';
 import { ScheduleRepository } from '../../domain/schedule.repository';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 class PrismaScheduleRepository extends ScheduleRepository {
   constructor(private readonly prisma: PrismaService) {
     super();
@@ -20,7 +22,7 @@ class PrismaScheduleRepository extends ScheduleRepository {
     return Schedule.restore(created);
   }
 
-  async readAll(): Promise<Schedule[]> {
+  async listAll(): Promise<Schedule[]> {
     const schedules = await this.prisma.schedule.findMany();
 
     const mappedSchedules = schedules.map((s) => Schedule.restore(s));
@@ -28,7 +30,7 @@ class PrismaScheduleRepository extends ScheduleRepository {
     return mappedSchedules;
   }
 
-  async readById(id: string): Promise<Schedule | null> {
+  async getById(id: string): Promise<Schedule | null> {
     const schedule = await this.prisma.schedule.findUnique({
       where: { id },
     });
