@@ -3,10 +3,10 @@ import { CreateScheduleInput } from './create-schedule.dto';
 import { Schedule } from 'src/modules/schedule/domain/schedule.entity';
 
 export class CreateScheduleUseCase {
-  constructor(private scheduleRepositoy: ScheduleRepository) {}
+  constructor(private scheduleRepository: ScheduleRepository) {}
 
   async execute(input: CreateScheduleInput): Promise<Schedule> {
     const scheduleToCreate = Schedule.createSchedule(input);
-    return await this.scheduleRepositoy.create(scheduleToCreate);
+    return await this.scheduleRepository.create(scheduleToCreate);
   }
 }

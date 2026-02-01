@@ -10,13 +10,14 @@ export class Schedule {
   ) {}
 
   static createSchedule(props: {
+    id?: string;
     serviceId: string;
     barberId: string;
     clientId: string;
     datetime: Date;
   }): Schedule {
     return new Schedule(
-      '',
+      props.id ?? '',
       props.serviceId,
       props.barberId,
       props.clientId,

@@ -28,7 +28,7 @@ describe('CreateScheduleUsecase', () => {
   it('should create a schedule suscefully', async () => {
     const scheduleToCreate: CreateScheduleInput = {
       serviceId: 'test_service_id',
-      barberId: 'test_barber_id',
+      datetime: 'test_barber_id',
       clientId: 'test_id',
       datetime: new Date('2026-01-02T11:00:00Z'),
     };
