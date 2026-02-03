@@ -9,7 +9,7 @@ export class UpdateScheduleUsecase {
     const currentSchedule = await this.scheduleRepository.getById(input.id);
 
     if (!currentSchedule) {
-      throw new ScheduleNotFoundError(input.id);
+      throw new ScheduleNotFoundError();
     }
 
     const updatedSchedule = currentSchedule.updateSchedule(input);

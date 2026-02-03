@@ -8,7 +8,7 @@ export class DeleteScheduleUseCase {
     const currentSchedule = await this.scheduleRepository.getById(id);
 
     if (!currentSchedule) {
-      throw new ScheduleNotFoundError(id);
+      throw new ScheduleNotFoundError();
     }
 
     return await this.scheduleRepository.delete(id);

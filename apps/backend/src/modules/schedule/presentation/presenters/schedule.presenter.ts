@@ -1,3 +1,4 @@
+import { formatInTimeZone } from 'date-fns-tz';
 import { Schedule } from '../../domain/schedule.entity';
 import { format } from 'date-fns';
 
@@ -8,7 +9,7 @@ export class SchedulePresenter {
       serviceId: schedule.serviceId,
       barberId: schedule.barberId,
       clientId: schedule.clientId,
-      datetime: format(schedule.datetime, 'yyyy-MM-dd HH:mm'),
+      datetime: formatInTimeZone(schedule.datetime, 'UTC', 'yyyy-MM-dd HH:mm'),
       createdAt: schedule.createdAt,
     };
   }

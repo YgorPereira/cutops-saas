@@ -71,11 +71,9 @@ describe('ScheduleController (integration)', () => {
         forbidNonWhitelisted: true,
         transform: true,
       }),
-
-      app.useGlobalFilters(new ScheduleNotFoundFilter()),
     );
 
-    await app.init();
+    (app.useGlobalFilters(new ScheduleNotFoundFilter()), await app.init());
 
     createUseCase = modulesFixture.get(CreateScheduleUseCase);
     listAllUseCase = modulesFixture.get(ListAllSchedulesUseCase);
@@ -108,9 +106,9 @@ describe('ScheduleController (integration)', () => {
         serviceId: payload.serviceId,
         barberId: payload.barberId,
         clientId: payload.clientId,
-        datetime: '2026-01-02 07:30',
       }),
     );
+    expect(response.body.datetime).toContain('2026-01-02 10:30');
 
     expect(createUseCase.execute).toHaveBeenCalledTimes(1);
     expect(createUseCase.execute).toHaveBeenCalledWith(
@@ -225,7 +223,7 @@ describe('ScheduleController (integration)', () => {
       clientId: randomUUID(),
       serviceId: randomUUID(),
       barberId: randomUUID(),
-      datetime: '2026-01-03T11:18',
+      datetime: '2026-01-03T11:18Z',
     };
 
     const convertedToSchedule = Schedule.createSchedule({
@@ -257,7 +255,7 @@ describe('ScheduleController (integration)', () => {
       clientId: randomUUID(),
       serviceId: randomUUID(),
       barberId: randomUUID(),
-      datetime: '2026-01-03T11:18',
+      datetime: '2026-01-03T11:18Z',
     };
 
     jest

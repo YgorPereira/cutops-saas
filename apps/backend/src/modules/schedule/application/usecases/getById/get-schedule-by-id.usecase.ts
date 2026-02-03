@@ -9,7 +9,7 @@ export class GetScheduleByIdUseCase {
     const foundedSchedule = await this.scheduleRepository.getById(id);
 
     if (!foundedSchedule) {
-      throw new ScheduleNotFoundError(id);
+      throw new ScheduleNotFoundError();
     }
 
     return foundedSchedule;
