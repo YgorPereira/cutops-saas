@@ -2,6 +2,7 @@ import { ScheduleRepository } from 'src/modules/schedule/domain/schedule.reposit
 import { UpdateScheduleUsecase } from './update-schedule.usecase';
 import { Schedule } from 'src/modules/schedule/domain/schedule.entity';
 import { UpdateScheduleInput } from './update-schedule.dto';
+import { ScheduleNotFoundError } from 'src/modules/schedule/domain/errors/schedule-not-found.error';
 
 describe('UpdateScheduleUseCase', () => {
   let repositoryMock: jest.Mocked<ScheduleRepository>;
@@ -58,5 +59,15 @@ describe('UpdateScheduleUseCase', () => {
 
     expect(repositoryMock.update).toHaveBeenCalledTimes(1);
     expect(repositoryMock.getById).toHaveBeenCalledWith(`test_schedule_id`);
+  });
+
+  it('should throw ScheduleNotFoundError when try to update a Schedule with non-existent id', async () => {
+    repositoryMock.getById.mockResolvedValueOnce(null);
+
+    await expect(useCase.execute('non_existent_id')).rejects.toThrow(
+      ScheduleNotFoundError,
+    );
+
+    expect(repositoryMock.update).not.toHaveBeenCalled();
   });
 });

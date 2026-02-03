@@ -1,6 +1,7 @@
 import { ScheduleRepository } from 'src/modules/schedule/domain/schedule.repository';
 import { Schedule } from 'src/modules/schedule/domain/schedule.entity';
 import { GetScheduleByIdUseCase } from './get-schedule-by-id.usecase';
+import { ScheduleNotFoundError } from 'src/modules/schedule/domain/errors/schedule-not-found.error';
 
 describe('GetScheduleByIdUseCase', () => {
   let repositoryMock: jest.Mocked<ScheduleRepository>;
@@ -33,5 +34,13 @@ describe('GetScheduleByIdUseCase', () => {
 
     expect(repositoryMock.getById).toHaveBeenCalledTimes(1);
     expect(repositoryMock.getById).toHaveBeenCalledWith('test_schedule_id');
+  });
+
+  it('should throw a ScheduleNotFoundError when try to get a schedule with non-existent id', async () => {
+    repositoryMock.getById.mockResolvedValueOnce(null);
+
+    await expect(useCase.execute('non_existent_id')).rejects.toThrow(
+      ScheduleNotFoundError,
+    );
   });
 });

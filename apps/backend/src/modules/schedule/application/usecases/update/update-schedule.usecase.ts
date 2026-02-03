@@ -1,5 +1,6 @@
 import { ScheduleRepository } from 'src/modules/schedule/domain/schedule.repository';
 import { UpdateScheduleInput } from './update-schedule.dto';
+import { ScheduleNotFoundError } from '../../../domain/errors/schedule-not-found.error';
 
 export class UpdateScheduleUsecase {
   constructor(private scheduleRepository: ScheduleRepository) {}
@@ -8,7 +9,7 @@ export class UpdateScheduleUsecase {
     const currentSchedule = await this.scheduleRepository.getById(input.id);
 
     if (!currentSchedule) {
-      throw new Error('Schedule not found');
+      throw new ScheduleNotFoundError(input.id);
     }
 
     const updatedSchedule = currentSchedule.updateSchedule(input);

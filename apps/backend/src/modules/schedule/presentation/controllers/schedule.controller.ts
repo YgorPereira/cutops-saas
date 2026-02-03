@@ -4,7 +4,6 @@ import {
   Post,
   Body,
   Param,
-  NotFoundException,
   Put,
   Delete,
   HttpCode,
@@ -55,11 +54,6 @@ export class ScheduleController {
   @Get(':id')
   async getById(@Param('id') params: { id: string }) {
     const schedule = await this.getScheduleByIdUseCase.execute(params.id);
-
-    if (!schedule) {
-      throw new NotFoundException('Schedule not found');
-    }
-
     return SchedulePresenter.toHttp(schedule);
   }
 

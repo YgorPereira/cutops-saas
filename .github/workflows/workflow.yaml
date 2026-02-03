@@ -5,11 +5,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Using Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '22.x'
+          node-version: "22.x"
 
       - name: Run installation
         working-directory: apps/backend
@@ -26,28 +26,27 @@ jobs:
     services:
       postgres:
         image: postgres:16
-        ports: 
+        ports:
           - 5432:5432
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: test_db
-        options:
-          --health-cmd="pg_isready -U postgres" 
-          --health-interval=10s 
-          --health-timeout=5s 
+        options: --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
           --health-retries=5
-      
+
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
-      
+
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Using Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '22.x'
+          node-version: "22.x"
 
       - name: Run installation
         working-directory: apps/backend
@@ -59,7 +58,7 @@ jobs:
 
       - name: Run prisma deploy
         working-directory: apps/backend
-        run: npx prisma migrate deploy 
+        run: npx prisma migrate deploy
 
       - name: Run integration tests
         working-directory: apps/backend

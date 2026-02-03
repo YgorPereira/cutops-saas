@@ -12,6 +12,8 @@ import { Schedule } from '../../domain/schedule.entity';
 import request from 'supertest';
 import { randomUUID } from 'crypto';
 import { UpdateScheduleRequest } from '../dtos/update-schedule.request';
+import { ScheduleNotFoundError } from '../../domain/errors/schedule-not-found.error';
+import { ScheduleNotFoundFilter } from '../filters/schedule-not-found.filter';
 // import { rejects } from 'assert';
 
 describe('ScheduleController (integration)', () => {
@@ -69,6 +71,8 @@ describe('ScheduleController (integration)', () => {
         forbidNonWhitelisted: true,
         transform: true,
       }),
+
+      app.useGlobalFilters(new ScheduleNotFoundFilter()),
     );
 
     await app.init();
@@ -202,11 +206,18 @@ describe('ScheduleController (integration)', () => {
     expect(getByIdUseCase.execute).toHaveBeenCalledTimes(1);
   });
 
-  it('GET /schedules/:id should return a empty object when dont find schedule by id', async () => {
-    jest.spyOn(getByIdUseCase, 'execute').mockResolvedValue(null);
-    await request(app.getHttpServer())
+  it('GET /schedules/:id should catch a ScheduleNotFoundError when try to get with non-existent id', async () => {
+    jest
+      .spyOn(getByIdUseCase, 'execute')
+      .mockRejectedValue(new ScheduleNotFoundError());
+    const response = await request(app.getHttpServer())
       .get(`/schedules/${scheduleToCreate.id}`)
       .expect(404);
+
+    expect(response.body).toEqual({
+      statusCode: 404,
+      message: 'Schedule not found.',
+    });
   });
 
   it('PUT /schedules/:id should return a updated schedule object', async () => {
@@ -241,27 +252,28 @@ describe('ScheduleController (integration)', () => {
     );
   });
 
-  // it('PUT /schedules/:id should return a empty object when dont find schedule by id', async () => {
-  //   const payload: UpdateScheduleRequest = {
-  //     clientId: randomUUID(),
-  //     serviceId: randomUUID(),
-  //     barberId: randomUUID(),
-  //     datetime: '2026-01-03T11:18',
-  //   };
+  it('PUT /schedules/:id should catch a ScheduleNotFoundError when try to put with non-existent id', async () => {
+    const payload: UpdateScheduleRequest = {
+      clientId: randomUUID(),
+      serviceId: randomUUID(),
+      barberId: randomUUID(),
+      datetime: '2026-01-03T11:18',
+    };
 
-  //   jest.spyOn(updateUseCase, 'execute').mockResolvedValue(null);
+    jest
+      .spyOn(updateUseCase, 'execute')
+      .mockRejectedValue(new ScheduleNotFoundError());
 
-  //   const response = await request(app.getHttpServer())
-  //     .put(`/schedules/${scheduleToCreate.id}`)
-  //     .send(payload)
-  //     .expect(404);
+    const response = await request(app.getHttpServer())
+      .put(`/schedules/${scheduleToCreate.id}`)
+      .send(payload)
+      .expect(404);
 
-  //   expect(response.body).toEqual({
-  //   statusCode: 404,
-  //   message: 'Schedule not found',
-  //   error: 'Not Found',
-  // });
-  // });
+    expect(response.body).toEqual({
+      statusCode: 404,
+      message: 'Schedule not found.',
+    });
+  });
 
   it('DELETE /schedules/:id should delete a Schedule and return null', async () => {
     jest.spyOn(deleteUseCase, 'execute').mockResolvedValue(undefined);
@@ -271,5 +283,20 @@ describe('ScheduleController (integration)', () => {
       .expect(204);
 
     expect(response.body).toEqual({});
+  });
+
+  it('DELETE /schedules/:id should catch a ScheduleNotFoundError when try to delete with non-existent id', async () => {
+    jest
+      .spyOn(deleteUseCase, 'execute')
+      .mockRejectedValue(new ScheduleNotFoundError());
+
+    const response = await request(app.getHttpServer())
+      .delete(`/schedules/${scheduleToCreate.id}`)
+      .expect(404);
+
+    expect(response.body).toEqual({
+      statusCode: 404,
+      message: 'Schedule not found.',
+    });
   });
 });
