@@ -1,7 +1,9 @@
 import { Schedule } from 'src/modules/schedule/domain/schedule.entity';
 import { ScheduleRepository } from 'src/modules/schedule/domain/schedule.repository';
 import { ScheduleNotFoundError } from '../../../domain/errors/schedule-not-found.error';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class GetScheduleByIdUseCase {
   constructor(private scheduleRepository: ScheduleRepository) {}
 

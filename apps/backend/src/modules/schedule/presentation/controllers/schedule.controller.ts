@@ -52,17 +52,14 @@ export class ScheduleController {
   }
 
   @Get(':id')
-  async getById(@Param('id') params: { id: string }) {
-    const schedule = await this.getScheduleByIdUseCase.execute(params.id);
+  async getById(@Param('id') id: string) {
+    const schedule = await this.getScheduleByIdUseCase.execute(id);
     return SchedulePresenter.toHttp(schedule);
   }
 
   @Put(':id')
-  async update(
-    @Param('id') params: { id: string },
-    @Body() body: UpdateScheduleRequest,
-  ) {
-    const updateInputSchedule = ScheduleMapper.toUpdateInput(params.id, body);
+  async update(@Param('id') id: string, @Body() body: UpdateScheduleRequest) {
+    const updateInputSchedule = ScheduleMapper.toUpdateInput(id, body);
 
     const updatedSchedule =
       await this.updateScheduleUseCase.execute(updateInputSchedule);
@@ -72,7 +69,7 @@ export class ScheduleController {
 
   @Delete(':id')
   @HttpCode(204)
-  async delete(@Param('id') params: { id: string }) {
-    return await this.deleteScheduleUseCase.execute(params.id);
+  async delete(@Param('id') id: string) {
+    return await this.deleteScheduleUseCase.execute(id);
   }
 }

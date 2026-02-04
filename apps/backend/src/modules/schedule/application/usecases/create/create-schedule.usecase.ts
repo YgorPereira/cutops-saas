@@ -1,7 +1,9 @@
 import { ScheduleRepository } from 'src/modules/schedule/domain/schedule.repository';
 import { CreateScheduleInput } from './create-schedule.dto';
 import { Schedule } from 'src/modules/schedule/domain/schedule.entity';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class CreateScheduleUseCase {
   constructor(private scheduleRepository: ScheduleRepository) {}
 
