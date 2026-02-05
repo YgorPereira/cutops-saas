@@ -63,4 +63,24 @@ jobs:
 
       - name: Run integration tests
         working-directory: apps/backend
-        run: npm run test:integration
+        run: npm run test:integration    
+
+  build:
+    runs-on: ubuntu-latest
+    needs: unit_tests
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Using Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22.x"
+
+      - name: Run installation
+        working-directory: apps/backend
+        run: npm ci
+
+      - name: Build application
+        working-directory: apps/backend
+        run: npm run build
