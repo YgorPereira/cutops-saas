@@ -12,6 +12,7 @@ model Schedule {
   updatedAt DateTime       @updatedAt @map("updated_at")
   serviceId String         @map("service_id")
   clientId  String         @map("client_id")
+  barber    Barber         @relation(fields: [barberId], references: [id], onDelete: Cascade)
   barberId  String         @map("barber_id")
   status    ScheduleStatus @default(PENDING)
   datetime  DateTime
@@ -21,4 +22,14 @@ enum ScheduleStatus {
   PENDING
   CANCELLED
   COMPLETED
+}
+
+model Barber {
+  id        String     @id @default(uuid())
+  name      String
+  email     String    @unique
+  phone     String
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  schedules Schedule[]
 }
