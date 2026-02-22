@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { PrismaScheduleRepository } from './prisma-schedule.repository';
 import { createPrismaClient } from 'src/modules/database/prisma.client';
+import { Barber } from 'src/modules/barber/domain/barber.entity';
 import { Schedule } from '../../domain/schedule.entity';
 
 describe('PrismaScheduleRepository', () => {
@@ -8,12 +9,9 @@ describe('PrismaScheduleRepository', () => {
   let repository: PrismaScheduleRepository;
   let created: Schedule;
 
-  const scheduleDefaultData: Schedule = Schedule.createSchedule({
-    serviceId: 'service-123',
-    barberId: 'barber-456',
-    clientId: 'client-789',
-    datetime: new Date('2026-01-01T10:00:00Z'),
-  });
+  let scheduleDefaultData: Schedule;
+
+  let restoredBarber: Barber;
 
   beforeAll(async () => {
     // Create the prisma client
@@ -29,6 +27,26 @@ describe('PrismaScheduleRepository', () => {
   beforeEach(async () => {
     // Delete all schedules before each test
     await prisma.schedule.deleteMany();
+
+    // Deleta all barbers before each test
+    await prisma.barber.deleteMany();
+
+    const createdBarber = await prisma.barber.create({
+      data: {
+        name: 'Yuri Ryan',
+        email: 'yuriryan1204@gmail.com',
+        phone: '(12)123456789',
+      },
+    });
+
+    restoredBarber = Barber.restore(createdBarber);
+
+    scheduleDefaultData = Schedule.createSchedule({
+      serviceId: 'service-123',
+      barberId: restoredBarber.id,
+      clientId: 'client-789',
+      datetime: new Date('2026-01-01T10:00:00Z'),
+    });
 
     // Seed data for tests
     created = await repository.create(scheduleDefaultData);
