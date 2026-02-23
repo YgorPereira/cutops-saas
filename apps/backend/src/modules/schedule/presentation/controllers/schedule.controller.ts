@@ -13,20 +13,20 @@ import {
 
 import { ScheduleMapper } from '../mappers/schedule.mapper';
 import { CreateScheduleUseCase } from '../../application/usecases/create/create-schedule.usecase';
-import { GetScheduleByIdUseCase } from '../../application/usecases/getById/get-schedule-by-id.usecase';
-import { ListAllSchedulesUseCase } from '../../application/usecases/listAll/list-all-schedules.usecase';
 import { UpdateScheduleUsecase } from '../../application/usecases/update/update-schedule.usecase';
 import { DeleteScheduleUseCase } from '../../application/usecases/delete/delete-schedule.usecase';
 import { SchedulePresenter } from '../presenters/schedule.presenter';
 import { CreateScheduleRequest } from '../dtos/create-schedule.request';
 import { UpdateScheduleRequest } from '../dtos/update-schedule.request';
+import { GetScheduleByIdWithBarberUseCase } from '../../application/usecases/getByIdWithBarber/get-schedule-by-id-with-barber.usecase';
+import { ListAllSchedulesWithBarberUseCase } from '../../application/usecases/listAllWithBarber/list-all-schedules.usecase';
 
 @Controller('schedules')
 export class ScheduleController {
   constructor(
     private readonly createScheduleUseCase: CreateScheduleUseCase,
-    private readonly getScheduleByIdUseCase: GetScheduleByIdUseCase,
-    private readonly listAllSchedulesUseCase: ListAllSchedulesUseCase,
+    private readonly getScheduleWithBarberByIdUseCase: GetScheduleByIdWithBarberUseCase,
+    private readonly listAllSchedulesWithBarberUseCase: ListAllSchedulesWithBarberUseCase,
     private readonly updateScheduleUseCase: UpdateScheduleUsecase,
     private readonly deleteScheduleUseCase: DeleteScheduleUseCase,
   ) {}
@@ -42,10 +42,10 @@ export class ScheduleController {
 
   @Get()
   async listAll() {
-    const schedules = await this.listAllSchedulesUseCase.execute();
+    const schedules = await this.listAllSchedulesWithBarberUseCase.execute();
 
     const convertedSchedules = schedules.map((s) =>
-      SchedulePresenter.toHttp(s),
+      SchedulePresenter.listToHttp(s),
     );
 
     return convertedSchedules;
@@ -53,8 +53,8 @@ export class ScheduleController {
 
   @Get(':id')
   async getById(@Param('id') id: string) {
-    const schedule = await this.getScheduleByIdUseCase.execute(id);
-    return SchedulePresenter.toHttp(schedule);
+    const schedule = await this.getScheduleWithBarberByIdUseCase.execute(id);
+    return SchedulePresenter.listToHttp(schedule);
   }
 
   @Put(':id')

@@ -8,6 +8,10 @@ import { GetScheduleByIdUseCase } from './application/usecases/getById/get-sched
 import { UpdateScheduleUsecase } from './application/usecases/update/update-schedule.usecase';
 import { DeleteScheduleUseCase } from './application/usecases/delete/delete-schedule.usecase';
 import { DatabaseModule } from '../database/database.module';
+import { ListAllSchedulesWithBarberUseCase } from './application/usecases/listAllWithBarber/list-all-schedules.usecase';
+import { GetScheduleByIdWithBarberUseCase } from './application/usecases/getByIdWithBarber/get-schedule-by-id-with-barber.usecase';
+import { ScheduleQueryRepository } from './application/repositories/schedule.query.repository';
+import { PrismaScheduleQueryRepository } from './infra/prisma/prisma-schedule.query-repository';
 
 @Module({
   imports: [DatabaseModule],
@@ -17,9 +21,15 @@ import { DatabaseModule } from '../database/database.module';
       provide: ScheduleRepository,
       useClass: PrismaScheduleRepository,
     },
+    {
+      provide: ScheduleQueryRepository,
+      useClass: PrismaScheduleQueryRepository,
+    },
     CreateScheduleUseCase,
     ListAllSchedulesUseCase,
+    ListAllSchedulesWithBarberUseCase,
     GetScheduleByIdUseCase,
+    GetScheduleByIdWithBarberUseCase,
     UpdateScheduleUsecase,
     DeleteScheduleUseCase,
   ],

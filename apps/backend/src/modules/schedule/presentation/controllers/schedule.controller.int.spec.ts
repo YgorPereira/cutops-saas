@@ -2,8 +2,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateScheduleUseCase } from '../../application/usecases/create/create-schedule.usecase';
 import { UpdateScheduleUsecase } from '../../application/usecases/update/update-schedule.usecase';
-import { ListAllSchedulesUseCase } from '../../application/usecases/listAll/list-all-schedules.usecase';
-import { GetScheduleByIdUseCase } from '../../application/usecases/getById/get-schedule-by-id.usecase';
 import { DeleteScheduleUseCase } from '../../application/usecases/delete/delete-schedule.usecase';
 import { ScheduleController } from './schedule.controller';
 import { CreateScheduleRequest } from '../dtos/create-schedule.request';
@@ -14,15 +12,19 @@ import { randomUUID } from 'crypto';
 import { UpdateScheduleRequest } from '../dtos/update-schedule.request';
 import { ScheduleNotFoundError } from '../../domain/errors/schedule-not-found.error';
 import { ScheduleNotFoundFilter } from '../filters/schedule-not-found.filter';
-// import { rejects } from 'assert';
+import { ListAllSchedulesWithBarberUseCase } from '../../application/usecases/listAllWithBarber/list-all-schedules.usecase';
+import { GetScheduleByIdWithBarberUseCase } from '../../application/usecases/getByIdWithBarber/get-schedule-by-id-with-barber.usecase';
+import { ScheduleListDTO } from '../../application/dtos/schedule-list.dto';
 
 describe('ScheduleController (integration)', () => {
   let app: INestApplication;
   const id = randomUUID();
 
+  const baseDate = new Date('2026-01-02T10:00:00Z');
+
   let createUseCase: CreateScheduleUseCase;
-  let listAllUseCase: ListAllSchedulesUseCase;
-  let getByIdUseCase: GetScheduleByIdUseCase;
+  let listAllWithBarberUseCase: ListAllSchedulesWithBarberUseCase;
+  let getByIdWithBarberUseCase: GetScheduleByIdWithBarberUseCase;
   let updateUseCase: UpdateScheduleUsecase;
   let deleteUseCase: DeleteScheduleUseCase;
 
@@ -49,11 +51,11 @@ describe('ScheduleController (integration)', () => {
           useValue: { execute: jest.fn() },
         },
         {
-          provide: ListAllSchedulesUseCase,
+          provide: ListAllSchedulesWithBarberUseCase,
           useValue: { execute: jest.fn() },
         },
         {
-          provide: GetScheduleByIdUseCase,
+          provide: GetScheduleByIdWithBarberUseCase,
           useValue: { execute: jest.fn() },
         },
         {
@@ -76,8 +78,12 @@ describe('ScheduleController (integration)', () => {
     (app.useGlobalFilters(new ScheduleNotFoundFilter()), await app.init());
 
     createUseCase = modulesFixture.get(CreateScheduleUseCase);
-    listAllUseCase = modulesFixture.get(ListAllSchedulesUseCase);
-    getByIdUseCase = modulesFixture.get(GetScheduleByIdUseCase);
+    listAllWithBarberUseCase = modulesFixture.get(
+      ListAllSchedulesWithBarberUseCase,
+    );
+    getByIdWithBarberUseCase = modulesFixture.get(
+      GetScheduleByIdWithBarberUseCase,
+    );
     updateUseCase = modulesFixture.get(UpdateScheduleUsecase);
     deleteUseCase = modulesFixture.get(DeleteScheduleUseCase);
   });
@@ -145,34 +151,43 @@ describe('ScheduleController (integration)', () => {
   });
 
   it('GET /schedules should return a list of converted from Schedule', async () => {
-    const firstSchedule = Schedule.createSchedule(scheduleToCreate);
-    const secondSchedule = Schedule.createSchedule(scheduleToCreate);
+    const firstSchedule = new ScheduleListDTO(
+      'fakeId',
+      'service-123',
+      'felipe barbosa',
+      'client-123',
+      new Date('2026-01-05T10:00:00Z'),
+      baseDate,
+      baseDate,
+    );
 
-    const schedulesList = [firstSchedule, secondSchedule];
+    const schedulesList = [firstSchedule];
 
-    jest.spyOn(listAllUseCase, 'execute').mockResolvedValue(schedulesList);
+    jest
+      .spyOn(listAllWithBarberUseCase, 'execute')
+      .mockResolvedValue(schedulesList);
 
     const response = await request(app.getHttpServer())
       .get('/schedules')
       .expect(200);
 
     expect(Array.isArray(response.body)).toBe(true);
-    expect(response.body).toHaveLength(2);
+    expect(response.body).toHaveLength(1);
 
     expect(response.body[0]).toBeInstanceOf(Object);
     expect(response.body[0]).toEqual(
       expect.objectContaining({
-        barberId: firstSchedule.barberId,
+        barberName: firstSchedule.barberName,
         serviceId: firstSchedule.serviceId,
         clientId: firstSchedule.clientId,
       }),
     );
 
-    expect(listAllUseCase.execute).toHaveBeenCalledTimes(1);
+    expect(listAllWithBarberUseCase.execute).toHaveBeenCalledTimes(1);
   });
 
   it('GET /schedules should return a empty list when dont find any schedule', async () => {
-    jest.spyOn(listAllUseCase, 'execute').mockResolvedValue([]);
+    jest.spyOn(listAllWithBarberUseCase, 'execute').mockResolvedValue([]);
 
     const response = await request(app.getHttpServer())
       .get('/schedules')
@@ -181,11 +196,23 @@ describe('ScheduleController (integration)', () => {
     expect(Array.isArray(response.body)).toBe(true);
     expect(response.body).toHaveLength(0);
 
-    expect(listAllUseCase.execute).toHaveBeenCalledTimes(1);
+    expect(listAllWithBarberUseCase.execute).toHaveBeenCalledTimes(1);
   });
 
   it('GET /schedules/:id should return a object converted from schedule', async () => {
-    jest.spyOn(getByIdUseCase, 'execute').mockResolvedValue(createdSchedule);
+    const fakeSchedule = new ScheduleListDTO(
+      'fakeId',
+      'service-123',
+      'felipe barbosa',
+      'client-123',
+      new Date('2026-01-05T10:00:00Z'),
+      baseDate,
+      baseDate,
+    );
+
+    jest
+      .spyOn(getByIdWithBarberUseCase, 'execute')
+      .mockResolvedValue(fakeSchedule);
 
     const response = await request(app.getHttpServer())
       .get(`/schedules/${scheduleToCreate.id}`)
@@ -194,19 +221,18 @@ describe('ScheduleController (integration)', () => {
     expect(response.body).toBeInstanceOf(Object);
     expect(response.body).toEqual(
       expect.objectContaining({
-        id: createdSchedule.id,
-        barberId: createdSchedule.barberId,
-        serviceId: createdSchedule.serviceId,
-        clientId: createdSchedule.clientId,
+        barberName: fakeSchedule.barberName,
+        serviceId: fakeSchedule.serviceId,
+        clientId: fakeSchedule.clientId,
       }),
     );
 
-    expect(getByIdUseCase.execute).toHaveBeenCalledTimes(1);
+    expect(getByIdWithBarberUseCase.execute).toHaveBeenCalledTimes(1);
   });
 
   it('GET /schedules/:id should catch a ScheduleNotFoundError when try to get with non-existent id', async () => {
     jest
-      .spyOn(getByIdUseCase, 'execute')
+      .spyOn(getByIdWithBarberUseCase, 'execute')
       .mockRejectedValue(new ScheduleNotFoundError());
     const response = await request(app.getHttpServer())
       .get(`/schedules/${scheduleToCreate.id}`)
