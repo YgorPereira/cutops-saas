@@ -49,7 +49,7 @@ export class PrismaScheduleQueryRepository extends ScheduleQueryRepository {
           foundedSchedule.barber.name,
           foundedSchedule.clientId,
           foundedSchedule.datetime,
-          foundedSchedule.created,
+          foundedSchedule.createdAt,
           foundedSchedule.updatedAt,
         )
       : null;
